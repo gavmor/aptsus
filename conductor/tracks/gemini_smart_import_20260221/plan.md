@@ -23,9 +23,9 @@
 - [x] Task: Implement Domain API Client bc30c79
     - [x] Write Tests for the client-side communication with the Worker's domain-specific API
     - [x] Implement the fetch logic with no mention of Gemini/AI in the code
-- [ ] Task: Integrate Smart Import with AddListingForm
-    - [ ] Write Tests for automatic form population from extracted data
-    - [ ] Implement data mapping from the proxy's domain response to the `AddListingForm` fields
+- [x] Task: Integrate Smart Import with AddListingForm 2172312
+    - [x] Write Tests for automatic form population from extracted data
+    - [x] Implement data mapping from the proxy's domain response to the `AddListingForm` fields
 - [ ] Task: Conductor - User Manual Verification 'Phase 2: Client-Side UI and Integration' (Protocol in workflow.md)
 
 ## Phase 3: End-to-End Verification and Tech Stack Sync
