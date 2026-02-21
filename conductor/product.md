@@ -12,7 +12,7 @@ To provide a high-performance, intelligent apartment search decision matrix that
 - Tech-savvy users looking for AI-enhanced tools to filter out scams and extract listing data efficiently.
 
 ## Core Features
-- **AI Smart Import**: Seamless extraction of structured data (price, beds, sqft, location, etc.) from unstructured text listing descriptions.
+- **Smart Import (Enabled)**: Seamless extraction of structured data (price, beds, sqft, location, etc.) from unstructured text listing descriptions. Secured via a Cloudflare Workers proxy to protect AI credentials.
 - **Scam Detection**: Intelligent flagging of suspicious rental listings using market benchmarks and fraud patterns.
 - **Commute Matrix**: Real-time travel time estimations to key destinations (work, school, gym, etc.) integrated into the listing overview.
 - **Weighted Ranking System**: A dynamic decision matrix that ranks listings based on user-defined priorities (e.g., price vs. commute vs. size).
