@@ -1,11 +1,12 @@
 # Implementation Plan: Sync .dev.vars to Cloudflare Secrets
 
 ## Phase 1: Native Wrangler Secret Sync Implementation
-- [ ] Task: Verify wrangler bulk secret support
-    - [ ] Run \`pnpm wrangler secrets bulk --help\` in the gateway directory to confirm support
-- [ ] Task: Add pnpm command to root package.json
-    - [ ] Add \`"secrets:sync": "cd gateway && pnpm wrangler secrets bulk .dev.vars"\` to \`scripts\`
-    - [ ] Verify the command correctly invokes the wrangler CLI
+- [x] Task: Verify wrangler bulk secret support
+    - [x] Run \`pnpm wrangler secret bulk --help\` in the gateway directory to confirm support
+- [x] Task: Add pnpm command to root package.json
+    - [x] Add \`"secrets:sync": "cd gateway && pnpm wrangler secret bulk .dev.vars"\` to \`scripts\`
+    - [x] Verify the command correctly invokes the wrangler CLI
+- [ ] Task: Conductor - User Manual Verification 'Phase 1: Native Wrangler Secret Sync Implementation' (Protocol in workflow.md)
 - [ ] Task: Conductor - User Manual Verification 'Phase 1: Native Wrangler Secret Sync Implementation' (Protocol in workflow.md)
 
 ## Phase 2: Final Verification and Documentation

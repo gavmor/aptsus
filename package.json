@@ -12,7 +12,8 @@
     "test": "vitest run",
     "e2e": "playwright test",
     "storybook": "storybook dev -p 6006",
-    "build-storybook": "storybook build"
+    "build-storybook": "storybook build",
+    "secrets:sync": "cd gateway && pnpm wrangler secret bulk .dev.vars"
   },
   "keywords": [],
   "author": "",
