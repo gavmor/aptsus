@@ -4,10 +4,10 @@
 - [x] Task: Initialize Cloudflare Worker project cf32831
     - [x] Write Tests for project initialization and basic routing
     - [x] Implement Cloudflare Worker boilerplate using Wrangler
-- [ ] Task: Implement AI-Agnostic Extraction API
-    - [ ] Define the RESTful domain-specific API (e.g., `POST /extract-listing`)
-    - [ ] Write Tests for proxying requests to Gemini (using mocks)
-    - [ ] Implement the proxy logic including all Gemini configuration (model, prompts, hyperparameters) in the Worker
+- [x] Task: Implement AI-Agnostic Extraction API a33e513
+    - [x] Define the RESTful domain-specific API (e.g., `POST /extract-listing`)
+    - [x] Write Tests for proxying requests to Gemini (using mocks)
+    - [x] Implement the proxy logic including all Gemini configuration (model, prompts, hyperparameters) in the Worker
 - [ ] Task: Secure Gemini API Key
     - [ ] Configure Cloudflare Workers Secrets for the Gemini API key
     - [ ] Implement secure retrieval of the secret within the Worker
