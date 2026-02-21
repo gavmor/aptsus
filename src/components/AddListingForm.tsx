@@ -67,12 +67,12 @@ export const AddListingForm = ({
           </div>
           <div className="flex-1">
             <h3 className="font-bold text-blue-900 text-sm mb-1">
-              ✨ AI Smart Fill
+              ✨ Smart Import
             </h3>
             <p className="text-xs text-blue-700 mb-4 leading-relaxed max-w-lg">
-              Paste a messy description, listing title, or email snippet. Gemini
-              will read it and extract the price, amenities, and details for you
-              automatically.
+              Paste a messy description, listing title, or email snippet. Our
+              service will read it and extract the price, amenities, and details
+              for you automatically.
             </p>
             <div className="flex gap-2">
               <input
@@ -102,7 +102,7 @@ export const AddListingForm = ({
         <div className="mb-6 bg-red-50 border border-red-200 rounded-xl p-4 flex items-start animate-in slide-in-from-top-2">
           <AlertTriangle className="w-5 h-5 text-red-600 mr-3 mt-0.5 shrink-0" />
           <div>
-            <h4 className="font-bold text-red-900 text-sm">AI Scam Alert</h4>
+            <h4 className="font-bold text-red-900 text-sm">Scam Alert</h4>
             <p className="text-sm text-red-700 mt-1">{newListing.scamReason}</p>
             <p className="text-xs text-red-500 mt-2 font-medium">
               This listing will be automatically flagged as a scam if saved.
@@ -166,7 +166,7 @@ export const AddListingForm = ({
                   onClick={handleEstimateCommutes}
                   loading={isEstimating}
                 >
-                  Estimate with AI
+                  Estimate Travel Times
                 </Button>
               )}
             </div>
