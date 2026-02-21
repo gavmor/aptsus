@@ -4,9 +4,10 @@
 - [ ] Task: Initialize Cloudflare Worker project
     - [ ] Write Tests for project initialization and basic routing
     - [ ] Implement Cloudflare Worker boilerplate using Wrangler
-- [ ] Task: Implement Gemini API Proxying
+- [ ] Task: Implement AI-Agnostic Extraction API
+    - [ ] Define the RESTful domain-specific API (e.g., `POST /extract-listing`)
     - [ ] Write Tests for proxying requests to Gemini (using mocks)
-    - [ ] Implement the proxy logic to communicate with Gemini 1.5 Flash
+    - [ ] Implement the proxy logic including all Gemini configuration (model, prompts, hyperparameters) in the Worker
 - [ ] Task: Secure Gemini API Key
     - [ ] Configure Cloudflare Workers Secrets for the Gemini API key
     - [ ] Implement secure retrieval of the secret within the Worker
@@ -15,16 +16,16 @@
     - [ ] Implement the minimum-viable session cookie/token logic in the proxy
 - [ ] Task: Conductor - User Manual Verification 'Phase 1: Cloudflare Workers Proxy Implementation' (Protocol in workflow.md)
 
-## Phase 2: Client-Side UI and Integration
-- [ ] Task: Create Smart Import UI Component
-    - [ ] Write Tests for the Smart Import input/modal
-    - [ ] Implement the UI component for pasting listing descriptions
-- [ ] Task: Implement Proxy API Client
-    - [ ] Write Tests for the client-side communication with the Worker proxy
-    - [ ] Implement the fetch logic including session token handling
+## Phase 2: Client-Side UI and Integration (AI-Agnostic)
+- [ ] Task: Create Domain-Specific Smart Import UI Component
+    - [ ] Write Tests for the Smart Import input/modal (ensure no "AI" or "Gemini" labels)
+    - [ ] Implement the UI component using domain language (e.g., "Smart Import Listing")
+- [ ] Task: Implement Domain API Client
+    - [ ] Write Tests for the client-side communication with the Worker's domain-specific API
+    - [ ] Implement the fetch logic with no mention of Gemini/AI in the code
 - [ ] Task: Integrate Smart Import with AddListingForm
     - [ ] Write Tests for automatic form population from extracted data
-    - [ ] Implement data mapping from the Gemini response to the `AddListingForm` fields
+    - [ ] Implement data mapping from the proxy's domain response to the `AddListingForm` fields
 - [ ] Task: Conductor - User Manual Verification 'Phase 2: Client-Side UI and Integration' (Protocol in workflow.md)
 
 ## Phase 3: End-to-End Verification and Tech Stack Sync
