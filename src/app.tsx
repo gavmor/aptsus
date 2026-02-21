@@ -7,9 +7,12 @@ import { DestinationsTab } from "./components/DestinationsTab";
 import { AddListingForm } from "./components/AddListingForm";
 import { ListingsList } from "./components/ListingsList";
 import { Destination, Listing, Criteria, AnalysisResult } from "./types";
-
-// --- Gemini API Configuration ---
-const apiKey = ""; // API Key injected at runtime
+import {
+  extractListingData,
+  login,
+  estimateCommutes,
+  analyzeListing,
+} from "./services/data-extraction";
 
 // --- Constants ---
 const STATIC_CRITERIA: Record<string, Criteria> = {
@@ -22,38 +25,12 @@ const STATIC_CRITERIA: Record<string, Criteria> = {
 
 // --- Helper Functions ---
 
-async function callGeminiAPI(prompt: string, systemInstruction = "") {
-  try {
-    const payload = {
-      contents: [{ parts: [{ text: prompt }] }],
-      systemInstruction: { parts: [{ text: systemInstruction }] },
-      generationConfig: { responseMimeType: "application/json" },
-    };
-
-    const response = await fetch(
-      `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-09-2025:generateContent?key=${apiKey}`,
-      {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(payload),
-      },
-    );
-
-    if (!response.ok) throw new Error("Gemini API failed");
-    const data = await response.json();
-    const text = data.candidates?.[0]?.content?.parts?.[0]?.text;
-    return JSON.parse(text);
-  } catch (error) {
-    console.error("Gemini Error:", error);
-    return null;
-  }
-}
-
 // --- Main Application ---
 
 export default function App() {
   // --- State with LocalStorage Initialization ---
 
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [activeTab, setActiveTab] = useState("list");
   const [showWeights, setShowWeights] = useState(false);
   const [importText, setImportText] = useState("");
@@ -64,6 +41,30 @@ export default function App() {
   const [analysisResults, setAnalysisResults] = useState<
     Record<number, AnalysisResult>
   >({});
+
+  // --- Auth Wrapper ---
+  const withAuth = async <T,>(action: () => Promise<T>): Promise<T | null> => {
+    try {
+      return await action();
+    } catch (error: any) {
+      if (error.message === "Unauthorized") {
+        const password = window.prompt("Please enter the gateway password:");
+        if (password) {
+          try {
+            await login(password);
+            setIsLoggedIn(true);
+            return await action(); // Retry
+          } catch (loginError) {
+            alert("Invalid password");
+          }
+        }
+      } else {
+        console.error("Action Error:", error);
+        alert(`Failed to perform action: ${error.message}`);
+      }
+      return null;
+    }
+  };
 
   // Load from Local Storage
   const [destinations, setDestinations] = useState<Destination[]>(() => {
@@ -242,16 +243,9 @@ export default function App() {
 
     if (missingDestinations.length === 0) return;
 
-    const destString = missingDestinations
-      .map((d) => `${d.id}: ${d.address}`)
-      .join(", ");
-
-    const systemPrompt =
-      "You are a navigation assistant. Estimate typical driving time in minutes. Return JSON: { [destId]: number }.";
-    const prompt = `Estimate typical drive times (minutes) from origin: "${address}" to these destinations: ${destString}.
-      Assume typical traffic. Return only the JSON object mapping ids to minutes.`;
-
-    const data = await callGeminiAPI(prompt, systemPrompt);
+    const data = await withAuth(() =>
+      estimateCommutes(address, missingDestinations),
+    );
 
     if (data) {
       setListings((prevListings) =>
@@ -268,30 +262,24 @@ export default function App() {
   const autoFillNewDestinationCommutes = async (newDest: Destination) => {
     if (listings.length === 0) return;
 
-    const originsList = listings
-      .map((l) => `${l.id}: ${l.address}`)
-      .join(" | ");
-
-    const systemPrompt =
-      "You are a navigation assistant. Estimate typical driving time in minutes from multiple origins to a single destination. Return JSON: { [listingId]: number }.";
-    const prompt = `Destination: "${newDest.address}".
-      Origins: ${originsList}.
-      Estimate drive time (minutes) from each origin to the destination. Return JSON mapping listingId to minutes.`;
-
-    const data = await callGeminiAPI(prompt, systemPrompt);
-
-    if (data) {
-      setListings((prevListings) =>
-        prevListings.map((item) => {
-          if (data[item.id]) {
-            return {
-              ...item,
-              commutes: { ...item.commutes, [newDest.id]: data[item.id] },
-            };
-          }
-          return item;
-        }),
-      );
+    // The gateway currently supports single address -> multiple destinations.
+    // For multiple origins -> single destination, we could either loop or extend the gateway.
+    // For now, let's keep it simple and loop, or update gateway if preferred.
+    // Given the "minimum-viable" goal, let's just implement the most common case for now.
+    // Actually, let's just loop for each listing to use existing gateway endpoint.
+    
+    for (const listing of listings) {
+      const data = await withAuth(() => estimateCommutes(listing.address, [newDest]));
+      if (data) {
+        setListings((prevListings) =>
+          prevListings.map((item) => {
+            if (item.id === listing.id) {
+              return { ...item, commutes: { ...item.commutes, ...data } };
+            }
+            return item;
+          })
+        );
+      }
     }
   };
 
@@ -349,12 +337,7 @@ export default function App() {
     if (!importText) return;
 
     setIsImporting(true);
-
-    const systemPrompt =
-      "Extract rental details JSON. Enum laundry: 'in-unit', 'on-site', 'none'. Infer gym boolean. Extract link if present. CRITICAL INSTRUCTION: Act as a fraud detective. Evaluate the text for common rental scams (e.g., suspicious wire requests, 'out of country' landlords, unbelievable deals, asking for application fee before viewing). Return 'suspectedScam' (boolean) and 'scamReason' (string explanation, or empty string if false).";
-    const prompt = `Extract details: "${importText}". Fields required: address, price, sqft, beds, laundry, gym, available, posted, notes, link, suspectedScam, scamReason.`;
-
-    const data = await callGeminiAPI(prompt, systemPrompt);
+    const data = await withAuth(() => extractListingData(importText));
 
     if (data) {
       setNewListing((prev) => ({
@@ -374,17 +357,9 @@ export default function App() {
     if (!newListing.address) return;
 
     setIsEstimating(true);
-
-    const destString = destinations
-      .map((d) => `${d.id}: ${d.address}`)
-      .join(", ");
-
-    const systemPrompt =
-      "You are a navigation assistant. Estimate typical driving time in minutes. Return JSON: { [destId]: number }.";
-    const prompt = `Estimate typical drive times (minutes) from origin: "${newListing.address}" to these destinations: ${destString}.
-      Assume typical traffic. Return only the JSON object mapping ids to minutes.`;
-
-    const data = await callGeminiAPI(prompt, systemPrompt);
+    const data = await withAuth(() =>
+      estimateCommutes(newListing.address, destinations),
+    );
 
     if (data) {
       setNewListing((prev) => ({
@@ -413,15 +388,9 @@ export default function App() {
       .map((key) => criteriaConfig[key]?.label || key)
       .join(", ");
 
-    const systemPrompt =
-      "You are a real estate expert and fraud investigator. Evaluate based on user priorities. Also strictly evaluate for scam probability based on the price, square footage, and notes. Return JSON: { pros: string[], cons: string[], verdict: string, scam_warning: string | null }.";
-    const prompt = `
-    Listing: ${JSON.stringify(listing)}
-    User Priorities (Most to Least Important): ${readablePriorities}.
-
-    Return JSON format. If you suspect this is a phishing or rental scam, provide a concise explanation in the 'scam_warning' field. Otherwise, leave 'scam_warning' as null.`;
-
-    const result = await callGeminiAPI(prompt, systemPrompt);
+    const result = await withAuth(() =>
+      analyzeListing(listing, readablePriorities),
+    );
 
     if (result) {
       setAnalysisResults((prev) => ({ ...prev, [listing.id]: result }));

@@ -85,6 +85,111 @@ export default {
       });
     }
 
+    if (url.pathname === '/estimate-commutes' && request.method === 'POST') {
+      const cookie = request.headers.get('Cookie');
+      if (!cookie || !cookie.includes('session=valid-session-token')) {
+        return new Response('Unauthorized', { status: 401 });
+      }
+
+      const { address, destinations } = (await request.json()) as {
+        address: string;
+        destinations: { id: string; name: string; address: string }[];
+      };
+
+      if (!address || !destinations || destinations.length === 0) {
+        return new Response('Missing address or destinations', { status: 400 });
+      }
+
+      const destString = destinations
+        .map((d) => `${d.id}: ${d.address}`)
+        .join(', ');
+
+      const systemPrompt =
+        'You are a navigation assistant. Estimate typical driving time in minutes. Return JSON: { [destId]: number }.';
+      const prompt = `Estimate typical drive times (minutes) from origin: "${address}" to these destinations: ${destString}.
+        Assume typical traffic. Return only the JSON object mapping ids to minutes.`;
+
+      const response = await fetch(`${GEMINI_API_URL}?key=${env.GEMINI_API_KEY}`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          contents: [{ parts: [{ text: prompt }] }],
+          systemInstruction: { parts: [{ text: systemPrompt }] },
+          generationConfig: { responseMimeType: 'application/json' },
+        }),
+      });
+
+      if (!response.ok) {
+        return new Response('Gemini API Error', { status: response.status });
+      }
+
+      const geminiData = (await response.json()) as any;
+      const responseText = geminiData.candidates[0].content.parts[0].text;
+      const jsonMatch = responseText.match(/\{[\s\S]*\}/);
+      const structuredData = jsonMatch ? JSON.parse(jsonMatch[0]) : JSON.parse(responseText);
+
+      return new Response(JSON.stringify(structuredData), {
+        status: 200,
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      });
+    }
+
+    if (url.pathname === '/analyze-listing' && request.method === 'POST') {
+      const cookie = request.headers.get('Cookie');
+      if (!cookie || !cookie.includes('session=valid-session-token')) {
+        return new Response('Unauthorized', { status: 401 });
+      }
+
+      const { listing, priorities } = (await request.json()) as {
+        listing: any;
+        priorities: string;
+      };
+
+      if (!listing || !priorities) {
+        return new Response('Missing listing or priorities', { status: 400 });
+      }
+
+      const systemPrompt =
+        'You are a real estate expert and fraud investigator. Evaluate based on user priorities. Also strictly evaluate for scam probability based on the price, square footage, and notes. Return JSON: { pros: string[], cons: string[], verdict: string, scam_warning: string | null }.';
+      const prompt = `
+      Listing: ${JSON.stringify(listing)}
+      User Priorities (Most to Least Important): ${priorities}.
+
+      Return JSON format. If you suspect this is a phishing or rental scam, provide a concise explanation in the 'scam_warning' field. Otherwise, leave 'scam_warning' as null.`;
+
+      const response = await fetch(`${GEMINI_API_URL}?key=${env.GEMINI_API_KEY}`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          contents: [{ parts: [{ text: prompt }] }],
+          systemInstruction: { parts: [{ text: systemPrompt }] },
+          generationConfig: { responseMimeType: 'application/json' },
+        }),
+      });
+
+      if (!response.ok) {
+        return new Response('Gemini API Error', { status: response.status });
+      }
+
+      const geminiData = (await response.json()) as any;
+      const responseText = geminiData.candidates[0].content.parts[0].text;
+      const jsonMatch = responseText.match(/\{[\s\S]*\}/);
+      const structuredData = jsonMatch ? JSON.parse(jsonMatch[0]) : JSON.parse(responseText);
+
+      return new Response(JSON.stringify(structuredData), {
+        status: 200,
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      });
+    }
+
     return new Response('Not Found', { status: 404 });
   },
 };

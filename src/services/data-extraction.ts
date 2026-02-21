@@ -33,3 +33,43 @@ export const extractListingData = async (description: string) => {
 
   return response.json();
 };
+
+export const estimateCommutes = async (address: string, destinations: any[]) => {
+  const response = await fetch(`${GATEWAY_URL}/estimate-commutes`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({ address, destinations }),
+  });
+
+  if (response.status === 401) {
+    throw new Error('Unauthorized');
+  }
+
+  if (!response.ok) {
+    throw new Error('Commute estimation failed');
+  }
+
+  return response.json();
+};
+
+export const analyzeListing = async (listing: any, priorities: string) => {
+  const response = await fetch(`${GATEWAY_URL}/analyze-listing`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({ listing, priorities }),
+  });
+
+  if (response.status === 401) {
+    throw new Error('Unauthorized');
+  }
+
+  if (!response.ok) {
+    throw new Error('Analysis failed');
+  }
+
+  return response.json();
+};
