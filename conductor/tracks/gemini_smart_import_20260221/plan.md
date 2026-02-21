@@ -16,7 +16,7 @@
     - [x] Implement the minimum-viable session cookie/token logic in the proxy
 - [x] Task: Conductor - User Manual Verification 'Phase 1: Cloudflare Workers Proxy Implementation' (Protocol in workflow.md) 9b7d6f3
 
-## Phase 2: Client-Side UI and Integration (AI-Agnostic)
+## Phase 2: Client-Side UI and Integration (AI-Agnostic) [checkpoint: f08a0ed]
 - [x] Task: Create Domain-Specific Smart Import UI Component 7899790
     - [x] Write Tests for the Smart Import input/modal (ensure no "AI" or "Gemini" labels)
     - [x] Implement the UI component using domain language (e.g., "Smart Import Listing")
@@ -26,7 +26,7 @@
 - [x] Task: Integrate Smart Import with AddListingForm 2172312
     - [x] Write Tests for automatic form population from extracted data
     - [x] Implement data mapping from the proxy's domain response to the `AddListingForm` fields
-- [ ] Task: Conductor - User Manual Verification 'Phase 2: Client-Side UI and Integration' (Protocol in workflow.md)
+- [x] Task: Conductor - User Manual Verification 'Phase 2: Client-Side UI and Integration' (Protocol in workflow.md) f08a0ed
 
 ## Phase 3: End-to-End Verification and Tech Stack Sync
 - [ ] Task: Final End-to-End Verification
