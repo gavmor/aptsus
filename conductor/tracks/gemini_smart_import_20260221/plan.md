@@ -8,9 +8,9 @@
     - [x] Define the RESTful domain-specific API (e.g., `POST /extract-listing`)
     - [x] Write Tests for proxying requests to Gemini (using mocks)
     - [x] Implement the proxy logic including all Gemini configuration (model, prompts, hyperparameters) in the Worker
-- [ ] Task: Secure Gemini API Key
-    - [ ] Configure Cloudflare Workers Secrets for the Gemini API key
-    - [ ] Implement secure retrieval of the secret within the Worker
+- [x] Task: Secure Gemini API Key a591c41
+    - [x] Configure Cloudflare Workers Secrets for the Gemini API key
+    - [x] Implement secure retrieval of the secret within the Worker
 - [ ] Task: Implement Session-based Token System
     - [ ] Write Tests for token generation, issuance, and validation
     - [ ] Implement the minimum-viable session cookie/token logic in the proxy
