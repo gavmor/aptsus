@@ -15,6 +15,11 @@ const dirname = typeof __dirname !== 'undefined' ? __dirname : path.dirname(file
 export default defineConfig({
   base: "/aptsus/",
   plugins: [react(), tailwindcss()],
+  server: {
+    watch: {
+      ignored: ["**/conductor/**"],
+    },
+  },
   test: {
     globals: true,
     environment: "jsdom",
