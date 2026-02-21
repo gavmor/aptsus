@@ -16,9 +16,9 @@ Host the ApartmentHunter application on GitHub Pages for a publicly accessible p
     - [x] Ensure the workflow is triggered on pushes to the `main` branch.
 - [x] Task: Conductor - User Manual Verification 'Phase 2: GitHub Actions Setup' (Protocol in workflow.md) 00eb1c0
 
-## Phase 3: Deployment and Verification
+## Phase 3: Deployment and Verification [checkpoint: 08589f7]
 - [x] Task: Deploy and verify the live application afb8b60
     - [x] Confirm the GitHub Action successfully runs and deploys to GitHub Pages.
     - [x] Perform a manual check of the live URL to ensure all features are functional.
     - [x] Document the live URL in the project's README.md.
-- [ ] Task: Conductor - User Manual Verification 'Phase 3: Deployment and Verification' (Protocol in workflow.md)
+- [x] Task: Conductor - User Manual Verification 'Phase 3: Deployment and Verification' (Protocol in workflow.md) 08589f7
