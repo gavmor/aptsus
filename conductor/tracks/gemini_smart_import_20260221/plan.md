@@ -17,9 +17,9 @@
 - [x] Task: Conductor - User Manual Verification 'Phase 1: Cloudflare Workers Proxy Implementation' (Protocol in workflow.md) 9b7d6f3
 
 ## Phase 2: Client-Side UI and Integration (AI-Agnostic)
-- [ ] Task: Create Domain-Specific Smart Import UI Component
-    - [ ] Write Tests for the Smart Import input/modal (ensure no "AI" or "Gemini" labels)
-    - [ ] Implement the UI component using domain language (e.g., "Smart Import Listing")
+- [x] Task: Create Domain-Specific Smart Import UI Component 7899790
+    - [x] Write Tests for the Smart Import input/modal (ensure no "AI" or "Gemini" labels)
+    - [x] Implement the UI component using domain language (e.g., "Smart Import Listing")
 - [ ] Task: Implement Domain API Client
     - [ ] Write Tests for the client-side communication with the Worker's domain-specific API
     - [ ] Implement the fetch logic with no mention of Gemini/AI in the code
