@@ -6,11 +6,11 @@ Create a `pnpm` command to automatically synchronize secrets from the Cloudflare
 ## Functional Requirements
 - **Sync Command**:
   - Implement a `pnpm secrets:sync` command in the root `package.json`.
-  - The command will trigger a process that parses `gateway/.dev.vars`.
-  - For each secret defined, use `wrangler secret put <KEY>` to upload the value to Cloudflare.
+  - The command will execute `wrangler secrets bulk .dev.vars` within the `gateway` directory.
+  - This native Wrangler command automatically parses the file and uploads all secrets to Cloudflare.
 - **Security**:
-  - Values must be piped to `wrangler secret put` via stdin to ensure they do not appear in process logs or history.
-  - The script must validate the existence of `.dev.vars` before attempting synchronization.
+  - The process relies on Wrangler's native secure handling of secrets.
+  - The script must ensure it is executed from the context of the `gateway` directory where `.dev.vars` resides.
 
 ## Tech Stack
 - **Command Runner**: pnpm
