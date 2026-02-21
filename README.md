@@ -2,6 +2,10 @@
 
 A high-performance apartment search decision matrix and tracker built with React, Vite, and Tailwind CSS v4. Modularized for scalability and fully integrated with Gemini AI for smart listing extraction and scam detection.
 
+## 🌐 Live Demo
+
+The application is deployed to GitHub Pages: **[Live URL](https://gavmor.github.io/aptsus/)**.
+
 ## 🚀 Features
 
 - **AI Smart Import**: Paste messy listing descriptions and let Gemini extract price, beds, sqft, and more.
