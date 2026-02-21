@@ -10,10 +10,10 @@ Host the ApartmentHunter application on GitHub Pages for a publicly accessible p
 - [x] Task: Conductor - User Manual Verification 'Phase 1: Project Configuration for Deployment' (Protocol in workflow.md) b06014a
 
 ## Phase 2: GitHub Actions Setup
-- [ ] Task: Create GitHub Action for automated deployment
-    - [ ] Create `.github/workflows/deploy.yml` to automate the build and deployment process.
-    - [ ] Configure the workflow to use `pnpm` and handle the React/Vite build process.
-    - [ ] Ensure the workflow is triggered on pushes to the `main` branch.
+- [x] Task: Create GitHub Action for automated deployment 933d1bc
+    - [x] Create `.github/workflows/deploy.yml` to automate the build and deployment process.
+    - [x] Configure the workflow to use `pnpm` and handle the React/Vite build process.
+    - [x] Ensure the workflow is triggered on pushes to the `main` branch.
 - [ ] Task: Conductor - User Manual Verification 'Phase 2: GitHub Actions Setup' (Protocol in workflow.md)
 
 ## Phase 3: Deployment and Verification
