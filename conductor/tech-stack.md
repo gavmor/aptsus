@@ -21,6 +21,7 @@
 - **Edge Gateway**: [Cloudflare Workers](https://workers.cloudflare.com/)
 - **AI Integration**: [Gemini 1.5 Flash](https://ai.google.dev/models/gemini) (Proxied via Edge Gateway)
 - **Authentication**: Session-based cookie system with password protection
+- **Secret Management**: Native Cloudflare Secrets, synchronized via `wrangler secret bulk` from `.dev.vars`.
 
 ## Architecture & State Management
 - **State Management**: React Context API & Hooks

@@ -55,6 +55,12 @@ pnpm dev
 pnpm storybook
 ```
 
+### Secret Management
+To synchronize local secrets from `gateway/.dev.vars` to Cloudflare:
+```bash
+pnpm secrets:sync
+```
+
 ### Testing
 ```bash
 # Unit Tests
