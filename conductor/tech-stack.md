@@ -16,6 +16,8 @@
 ## Infrastructure & Package Management
 - **Package Manager**: [pnpm 10](https://pnpm.io/)
 - **Runtime**: [Node.js](https://nodejs.org/)
+- **Deployment**: [GitHub Pages](https://pages.github.com/)
+- **CI/CD**: [GitHub Actions](https://github.com/features/actions)
 
 ## Architecture & State Management
 - **State Management**: React Context API & Hooks
