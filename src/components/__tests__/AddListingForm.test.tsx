@@ -1,4 +1,4 @@
-import { render, screen } from "@testing-library/react";
+import { render, screen, fireEvent } from "@testing-library/react";
 import { describe, it, expect, vi } from "vitest";
 import { AddListingForm } from "../AddListingForm";
 import { Listing } from "../../types";
@@ -56,5 +56,15 @@ describe("AddListingForm Labels", () => {
     rerender(<AddListingForm {...defaultProps} newListing={mockListingWithScam} />);
     expect(screen.queryByText(/AI Scam Alert/i)).not.toBeInTheDocument();
     expect(screen.getByText(/Scam Alert/i)).toBeInTheDocument();
+  });
+
+  it("calls handleSmartImport when the extract button is clicked", () => {
+    const handleSmartImport = vi.fn();
+    render(<AddListingForm {...defaultProps} handleSmartImport={handleSmartImport} importText="test description" />);
+    
+    const extractButton = screen.getByRole("button", { name: /Extract/i });
+    fireEvent.click(extractButton);
+    
+    expect(handleSmartImport).toHaveBeenCalledTimes(1);
   });
 });
