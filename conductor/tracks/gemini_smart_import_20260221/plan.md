@@ -20,9 +20,9 @@
 - [x] Task: Create Domain-Specific Smart Import UI Component 7899790
     - [x] Write Tests for the Smart Import input/modal (ensure no "AI" or "Gemini" labels)
     - [x] Implement the UI component using domain language (e.g., "Smart Import Listing")
-- [ ] Task: Implement Domain API Client
-    - [ ] Write Tests for the client-side communication with the Worker's domain-specific API
-    - [ ] Implement the fetch logic with no mention of Gemini/AI in the code
+- [x] Task: Implement Domain API Client bc30c79
+    - [x] Write Tests for the client-side communication with the Worker's domain-specific API
+    - [x] Implement the fetch logic with no mention of Gemini/AI in the code
 - [ ] Task: Integrate Smart Import with AddListingForm
     - [ ] Write Tests for automatic form population from extracted data
     - [ ] Implement data mapping from the proxy's domain response to the `AddListingForm` fields
