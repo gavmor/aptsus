@@ -4,5 +4,5 @@ This file tracks all major tracks for the project. Each track has its own detail
 
 ---
 
-- [ ] **Track: Sync .dev.vars to Cloudflare Secrets**
+- [x] **Track: Sync .dev.vars to Cloudflare Secrets**
   *Link: [./tracks/sync_cloudflare_secrets_20260221/](./tracks/sync_cloudflare_secrets_20260221/)*
