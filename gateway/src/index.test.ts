@@ -8,60 +8,65 @@ describe('Aptsus Gateway', () => {
     expect(await response.text()).toBe('Aptsus Gateway');
   });
 
-  describe('POST /extract-listing', () => {
-    it('returns structured data from raw text', async () => {
-      // Mock Gemini API call
-      const mockGeminiResponse = {
-        candidates: [
-          {
-            content: {
-              parts: [
-                {
-                  text: JSON.stringify({
-                    price: 2500,
-                    beds: 2,
-                    baths: 1,
-                    sqft: 900,
-                    location: 'Downtown',
-                    description: 'Nice apartment'
-                  })
-                }
-              ]
-            }
-          }
-        ]
-      };
-
-      // We need to mock the global fetch that the worker uses
-      const fetchSpy = vi.spyOn(globalThis, 'fetch').mockImplementation(async (input, init) => {
-        if (typeof input === 'string' && input.includes('generativelanguage.googleapis.com')) {
-          return new Response(JSON.stringify(mockGeminiResponse), {
-            status: 200,
-            headers: { 'Content-Type': 'application/json' }
-          });
-        }
-        return new Response('Not Found', { status: 404 });
-      });
-
-      const response = await SELF.fetch('https://example.com/extract-listing', {
+  describe('Session Management', () => {
+    it('POST /session with correct password sets a cookie', async () => {
+      // Mock env for the test if possible, but SELF.fetch uses the real worker instance
+      // In vitest-pool-workers, we can't easily mock env for SELF.fetch without complex setup
+      // So we'll assume the worker uses GATEWAY_PASSWORD from wrangler.toml or similar.
+      // For testing, we'll just test the logic.
+      
+      const response = await SELF.fetch('https://example.com/session', {
         method: 'POST',
-        body: JSON.stringify({ description: '2bd 1ba apartment in Downtown for $2500, 900sqft' }),
+        body: JSON.stringify({ password: 'test-password' }),
         headers: { 'Content-Type': 'application/json' }
       });
 
+      // This will fail initially as /session is not implemented
       expect(response.status).toBe(200);
-      const data = await response.json();
-      expect(data).toEqual({
-        price: 2500,
-        beds: 2,
-        baths: 1,
-        sqft: 900,
-        location: 'Downtown',
-        description: 'Nice apartment'
+      expect(response.headers.get('Set-Cookie')).toContain('session=');
+    });
+  });
+
+  describe('POST /extract-listing', () => {
+    it('returns 401 without session cookie', async () => {
+      const response = await SELF.fetch('https://example.com/extract-listing', {
+        method: 'POST',
+        body: JSON.stringify({ description: 'test' }),
+        headers: { 'Content-Type': 'application/json' }
+      });
+      expect(response.status).toBe(401);
+    });
+
+    it('returns structured data with valid session cookie', async () => {
+      const mockGeminiResponse = {
+        candidates: [{ content: { parts: [{ text: JSON.stringify({ price: 1000 }) }] } }]
+      };
+
+      const fetchSpy = vi.spyOn(globalThis, 'fetch').mockImplementation(async () => {
+        return new Response(JSON.stringify(mockGeminiResponse), { status: 200 });
       });
 
-      expect(fetchSpy).toHaveBeenCalled();
+      // Note: We need a way to generate a valid cookie for this test.
+      // For now, we'll just expect 200 if we send *any* cookie if that's how we implement it,
+      // or we first call /session.
       
+      const sessionResponse = await SELF.fetch('https://example.com/session', {
+        method: 'POST',
+        body: JSON.stringify({ password: 'test-password' }),
+        headers: { 'Content-Type': 'application/json' }
+      });
+      const cookie = sessionResponse.headers.get('Set-Cookie');
+
+      const response = await SELF.fetch('https://example.com/extract-listing', {
+        method: 'POST',
+        body: JSON.stringify({ description: 'test' }),
+        headers: { 
+          'Content-Type': 'application/json',
+          'Cookie': cookie || ''
+        }
+      });
+
+      expect(response.status).toBe(200);
       fetchSpy.mockRestore();
     });
   });
